@@ -1,0 +1,398 @@
+// PrepFlow database schema (MVP).
+//
+// Design notes (full reasoning in docs/decisions/):
+// - No authentication yet. StudyProfile is an anonymous workspace. Adding auth later means
+//   adding a nullable `userId` column to StudyProfile, a non-breaking migration.
+// - Relational where we filter/aggregate (topics, tasks), JSON only where data is always
+//   read together with its parent (topic evidence, plan summary).
+// - Progress is derived from `completedAt` on topics/tasks; there is no separate event table.
+// - Revision tasks are StudyTask rows with type = REVISION (same shape, same UI).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- enums
+
+enum SourceType {
+  PDF
+  TEXT
+}
+
+enum AnalysisStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  /// Finished and saved, but some chunks failed or some topics were dropped (see warnings).
+  PARTIAL
+  FAILED
+}
+
+/// Real pipeline stages, reported to the UI so progress is never faked.
+enum AnalysisStage {
+  LOADING
+  CHUNKING
+  ANALYZING
+  VALIDATING
+  MERGING
+  PERSISTING
+  COMPLETED
+}
+
+/// Model classification of how much study a topic needs. Minutes are computed by code from this.
+enum EffortClass {
+  QUICK
+  STANDARD
+  EXTENSIVE
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Importance {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+/// EXTRACTED = explicitly present in the material; INFERRED = model's inference.
+enum TopicOrigin {
+  EXTRACTED
+  INFERRED
+}
+
+enum TopicStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum PlanStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum TaskType {
+  STUDY
+  REVISION
+}
+
+enum TaskStatus {
+  PENDING
+  /// Started but not finished. Kept in place (and counted as covered) when a plan is rebalanced.
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+}
+
+/// Protection level the planner assigned a topic: MUST is protected, DEFER did not fit.
+enum PriorityTier {
+  MUST
+  SHOULD
+  IF_TIME
+  DEFER
+}
+
+/// Why a plan version exists.
+enum PlanTrigger {
+  GENERATE
+  RECOVER_MISSED
+  REPLAN_REMAINING
+}
+
+// ---------------------------------------------------------------- models
+
+/// Anonymous workspace root. `id` is an unguessable UUID that the browser remembers.
+model StudyProfile {
+  id        String   @id @default(uuid())
+  nickname  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  exams Exam[]
+}
+
+/// One exam a student is preparing for, plus the constraints the planner must respect.
+model Exam {
+  id        String @id @default(uuid())
+  profileId String
+  name      String
+
+  /// Calendar date of the exam (no time component).
+  examDate DateTime @db.Date
+
+  /// Daily study budget in minutes. Minutes avoid float rounding in the planner.
+  minutesPerDay Int
+
+  /// Weekdays the student can study: 0 = Sunday ... 6 = Saturday.
+  studyDays Int[]
+
+  /// Weak topics typed during setup, before any topics exist. Matched to topics after analysis.
+  weakTopicHints String[]
+
+  /// Optional self-reported confidence, 1 (low) to 5 (high). Validated in Zod.
+  confidence Int?
+
+  /// Days after completion at which a topic is revised. Deterministic and configurable.
+  revisionIntervalsDays Int[] @default([1, 3, 7])
+
+  /// Share (0-50) of daily time reserved for revision when the plan is generated.
+  revisionReservePct Int @default(15)
+
+  /// Share (0-30) of every study day held back for delays and recovery; never planned.
+  bufferPct Int @default(10)
+
+  /// Specific days the student cannot study.
+  blockedDates DateTime[] @db.Date
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile      StudyProfile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  materials    StudyMaterial[]
+  analysisRuns AnalysisRun[]
+  subjects     Subject[]
+  plans        StudyPlan[]
+
+  @@index([profileId])
+}
+
+/// Extracted text of an upload or paste. The original file is never stored.
+model StudyMaterial {
+  id               String     @id @default(uuid())
+  examId           String
+  sourceType       SourceType
+  /// Original filename for PDFs (display only; never used as a filesystem path).
+  filename         String?
+  /// SHA-256 of the normalized text, used to detect duplicate uploads.
+  contentHash      String
+  extractedText    String     @db.Text
+  charCount        Int
+  pageCount        Int?
+  /// PDF pages with little or no selectable text. They are kept, but may be missing content. Null for pasted text.
+  lowTextPageCount Int?
+  createdAt        DateTime   @default(now())
+
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, contentHash])
+  @@index([examId])
+}
+
+/// One analysis of ALL of an exam's materials. Persisted so progress is real and history is kept.
+/// Prompts and raw model responses are never stored.
+model AnalysisRun {
+  id     String         @id @default(uuid())
+  examId String
+  status AnalysisStatus @default(QUEUED)
+  stage  AnalysisStage?
+
+  /// Hash of everything that determines the result (versions, provider, model, material hashes, hints).
+  /// Identical fingerprint + a current SUCCEEDED/PARTIAL run = no new AI calls.
+  fingerprint String
+
+  provider String?
+  model    String?
+
+  materialCount   Int      @default(0)
+  totalChunks     Int      @default(0)
+  processedChunks Int      @default(0)
+  failedChunks    Int      @default(0)
+  topicCount      Int      @default(0)
+  /// Topics discarded because of invalid structure or unverifiable evidence.
+  droppedTopics   Int      @default(0)
+  /// Safe machine-readable codes, e.g. CHUNK_FAILED, TOPICS_DROPPED.
+  warnings        String[] @default([])
+
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  /// Updated while running; a RUNNING run with an old heartbeat is treated as interrupted.
+  heartbeatAt DateTime?
+  latencyMs   Int?
+
+  /// Retries after transient provider failures, summed over chunks.
+  retryCount         Int  @default(0)
+  /// Model responses that failed parsing/validation.
+  validationFailures Int  @default(0)
+  promptTokens       Int?
+  completionTokens   Int?
+
+  /// Stable machine-readable code (e.g. AI_INVALID_OUTPUT) and a safe, user-facing message.
+  errorCode    String?
+  errorMessage String?
+
+  createdAt DateTime @default(now())
+
+  exam   Exam    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  topics Topic[]
+
+  @@index([examId, createdAt])
+  @@index([examId, fingerprint])
+}
+
+model Subject {
+  id        String @id @default(uuid())
+  examId    String
+  name      String
+  sortOrder Int    @default(0)
+
+  exam   Exam    @relation(fields: [examId], references: [id], onDelete: Cascade)
+  topics Topic[]
+
+  @@unique([examId, name])
+}
+
+model Topic {
+  id            String  @id @default(uuid())
+  subjectId     String
+  /// Which analysis produced this topic (null for manually adjusted/legacy data).
+  analysisRunId String?
+
+  name        String
+  description String?
+  sortOrder   Int     @default(0)
+
+  difficulty       Difficulty
+  importance       Importance
+  /// How much revision this topic needs, 0 (none) to 1 (a lot). Used by the planner.
+  revisionWeight   Float      @default(0.5)
+  estimatedMinutes Int
+
+  origin         TopicOrigin
+  /// Subtopic support: the parent topic within the same subject.
+  parentId       String?
+  /// Model confidence 0-1 that this is a real, distinct topic (shown to the student, not used for scheduling).
+  confidence     Float?
+  /// True when the source material itself stresses the topic.
+  statedEmphasis Boolean      @default(false)
+  /// The model's effort classification; estimatedMinutes is derived from it deterministically.
+  effortClass    EffortClass?
+  /// The student's weak-topic hint this topic was matched to, if any.
+  weakHint       String?
+  /// Always read together with the topic, so JSON rather than a table.
+  /// Shape: [{ materialId, chunkId, page, pageEnd, snippet }]. The snippet is the canonical source text
+  /// and the page is derived by code; neither is taken from the model.
+  evidence       Json         @default("[]")
+
+  /// Weak-topic flag (from setup hints or the user). Feeds the priority engine.
+  isWeak     Boolean @default(false)
+  /// True once the student changed AI-provided values on the review screen.
+  userEdited Boolean @default(false)
+
+  status      TopicStatus @default(NOT_STARTED)
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subject       Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  analysisRun   AnalysisRun? @relation(fields: [analysisRunId], references: [id], onDelete: SetNull)
+  /// Topics that must be understood before this one.
+  parent        Topic?       @relation("TopicParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children      Topic[]      @relation("TopicParent")
+  prerequisites Topic[]      @relation("TopicPrerequisites")
+  /// Topics that depend on this one (inverse side).
+  dependents    Topic[]      @relation("TopicPrerequisites")
+  tasks         StudyTask[]
+
+  @@unique([subjectId, name])
+  @@index([subjectId])
+  @@index([analysisRunId])
+  @@index([parentId])
+}
+
+/// A generated plan. Every rebalance creates a NEW version and archives the old one, which is kept
+/// untouched as the audit trail. Finished work is copied into the new version, so the current plan
+/// is self-contained and history is never destroyed.
+model StudyPlan {
+  id      String      @id @default(uuid())
+  examId  String
+  version Int
+  status  PlanStatus  @default(ACTIVE)
+  trigger PlanTrigger @default(GENERATE)
+
+  /// The calendar day the plan was computed for ("today" for the planner). Never read from the clock later.
+  planDate             DateTime @db.Date
+  /// The analysis whose topics this plan schedules (null if that run was later removed).
+  basedOnAnalysisRunId String?
+
+  /// Minutes between the plan date and the exam, given the student's constraints (what they have).
+  availableMinutes Int
+  /// Study minutes the remaining syllabus needs.
+  requiredMinutes  Int
+  /// Minutes of new work (study + revision) the planner placed.
+  scheduledMinutes Int
+
+  /// The exact planner settings used, so the plan can be explained and reproduced.
+  config  Json @default("{}")
+  /// Fit report, per-topic priority breakdown, tiers, warnings, recovery report.
+  summary Json @default("{}")
+
+  /// Why an archived plan stopped being current (REBALANCED, REANALYZED...). Null while ACTIVE.
+  archivedReason String?
+
+  createdAt DateTime @default(now())
+
+  exam  Exam        @relation(fields: [examId], references: [id], onDelete: Cascade)
+  tasks StudyTask[]
+
+  @@unique([examId, version])
+  @@index([examId, status])
+}
+
+model StudyTask {
+  id      String  @id @default(uuid())
+  planId  String
+  /// Null once the topic itself was removed (the material was re-analyzed); the name snapshot remains.
+  topicId String?
+
+  topicName   String
+  subjectName String
+
+  type          TaskType @default(STUDY)
+  /// 1, 2, 3... for REVISION tasks (which review of the topic); null for STUDY.
+  revisionIndex Int?
+  /// "Part i of n" when a topic is studied over several sittings.
+  partIndex     Int?
+  partCount     Int?
+
+  /// Calendar day the task is scheduled for (no time component).
+  scheduledDate  DateTime  @db.Date
+  /// Where it was first planned, when recovery or finishing early moved it.
+  originalDate   DateTime? @db.Date
+  plannedMinutes Int
+  /// Real time spent, if the student said.
+  actualMinutes  Int?
+  /// Order within the day.
+  sortOrder      Int       @default(0)
+
+  status      TaskStatus @default(PENDING)
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  /// Snapshot of why the task exists: the topic's priority when the plan was made.
+  priorityScore Int          @default(0)
+  tier          PriorityTier @default(SHOULD)
+  reasons       String[]     @default([])
+
+  /// The task in the previous plan version this one was copied or moved from.
+  carriedFromTaskId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plan  StudyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  topic Topic?    @relation(fields: [topicId], references: [id], onDelete: SetNull)
+
+  @@index([planId, scheduledDate])
+  @@index([planId, status])
+  @@index([topicId])
+}

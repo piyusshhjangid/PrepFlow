@@ -1,0 +1,47 @@
+{
+  "name": "prepflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI study planning tool: turns a syllabus and notes into a prioritized, revision-aware study plan.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build:shared": "npm run build -w @prepflow/shared",
+    "dev:api": "npm run build:shared && npm run dev -w @prepflow/api",
+    "dev:web": "npm run dev -w @prepflow/web",
+    "build": "npm run build:shared && npm run build -w @prepflow/api && npm run build -w @prepflow/web",
+    "typecheck": "npm run build:shared && npm run typecheck -w @prepflow/api && npm run typecheck -w @prepflow/web",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run build:shared && npm run test -w @prepflow/shared && npm run test -w @prepflow/api && npm run test -w @prepflow/web",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:migrate": "npm run db:migrate -w @prepflow/api",
+    "db:seed": "npm run db:seed -w @prepflow/api",
+    "db:studio": "npm run db:studio -w @prepflow/api",
+    "pdf:inspect": "npm run pdf:inspect -w @prepflow/api --",
+    "db:deploy": "npm run db:deploy -w @prepflow/api",
+    "db:check": "npm run db:check -w @prepflow/api",
+    "db:check:test": "npm run db:check:test -w @prepflow/api",
+    "db:test:setup": "npm run db:test:setup -w @prepflow/api",
+    "test:integration": "npm run build:shared && npm run test:integration -w @prepflow/api",
+    "ai:smoke": "npm run ai:smoke -w @prepflow/api"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.6.0",
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.46.0"
+  }
+}

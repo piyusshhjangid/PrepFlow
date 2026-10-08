@@ -1,0 +1,23 @@
+# OPTIONAL convenience for local PostgreSQL. You do NOT need Docker: a normally installed
+# PostgreSQL works the same way (see README, "Database setup").
+# The API runs on your machine with `npm run dev:api`; Gemma/Ollama also stays on the host.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: prepflow
+      POSTGRES_PASSWORD: prepflow
+      POSTGRES_DB: prepflow
+    ports:
+      - '5432:5432'
+    volumes:
+      - prepflow-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U prepflow -d prepflow']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  prepflow-db:

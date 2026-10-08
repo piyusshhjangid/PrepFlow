@@ -1,0 +1,15 @@
+*.log
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+.vite/
+apps/api/.sandbox/
+apps/api/generated/
+build/
+coverage/
+dist/
+node_modules/
+tmp/
+uploads/

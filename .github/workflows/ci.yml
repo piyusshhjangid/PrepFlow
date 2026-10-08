@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: prepflow
+          POSTGRES_PASSWORD: prepflow
+          POSTGRES_DB: prepflow_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U prepflow -d prepflow_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      # Placeholders for CI only; both databases are throwaway. Dev DB URL just has to differ from the test one.
+      DATABASE_URL: postgresql://prepflow:prepflow@localhost:5432/prepflow?schema=public
+      TEST_DATABASE_URL: postgresql://prepflow:prepflow@localhost:5432/prepflow_test?schema=public
+      CLIENT_URL: http://localhost:5173
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: PostgreSQL integration tests (real database)
+        run: npm run test:integration
