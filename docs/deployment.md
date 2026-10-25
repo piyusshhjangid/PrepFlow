@@ -9,7 +9,7 @@ and record the real results in `docs/checkpoints/checkpoint-g.md`.
 | Component | What                                                                       | Notes                                                                         |
 | --------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | Web       | Static files from `npm run build -w @prepflow/web`                         | `apps/web/dist`. Needs SPA fallback (every unknown path serves `index.html`). |
-| API       | Node 20.11+ process, `npm run build` then `npm run start -w @prepflow/api` | Single process; analyses run inside it (see limitations).                     |
+| API       | Node 22.22.2+, 24.15.0+, or 26.0.0+ process, `npm run build` then `npm run start -w @prepflow/api` | Single process; analyses run inside it (see limitations).                     |
 | Database  | PostgreSQL 14+ (16 tested in CI)                                           | Apply migrations with `npm run db:deploy`.                                    |
 | AI        | Hosted Gemini API (`AI_PROVIDER=gemini`) or reachable Ollama               | `fake` is refused when `NODE_ENV=production`.                                 |
 

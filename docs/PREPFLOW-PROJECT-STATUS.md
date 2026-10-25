@@ -1,7 +1,7 @@
 # PREPFLOW — Project Status and Handoff
 
 **Snapshot date:** 7 October 2026  
-**Workspace:** `C:\Users\jangi\Downloads\prepflow-checkpoint-d\prepflow`  
+**Original workspace:** `C:\Users\jangi\Downloads\prepflow-checkpoint-d\prepflow`
 **Scope:** Continue the existing PrepFlow project through checkpoints D–H. This report describes the project as it exists in this snapshot; it does not claim deployment or user validation.
 
 ## Project overview
@@ -102,7 +102,7 @@ Not verified in this pass (environment limits): PostgreSQL integration tests and
 
 ## Run locally
 
-Prerequisites: Node.js 20.11+ (22 was used during development), npm 10+, PostgreSQL, and optionally Ollama for local AI.
+Prerequisites: Node.js 22.22.2+, 24.15.0+, or 26.0.0+, npm 10+, PostgreSQL, and optionally Ollama for local AI. These minimums match the current lockfile's engine requirements.
 
 1. Install dependencies: `npm install`.
 2. Copy `apps/api/.env.example` to `apps/api/.env` and set database URLs, client URL and AI provider configuration. Never put real secrets in source control or the shared ZIP.
@@ -119,4 +119,4 @@ Prerequisites: Node.js 20.11+ (22 was used during development), npm 10+, Postgre
 
 ## Snapshot limitations
 
-This ZIP is a source snapshot, not a deployed service. It excludes `.git`, `node_modules`, generated build output and local environment files. The repository working tree contains uncommitted changes; the ZIP is the portable copy of those changes through the snapshot date.
+This report records the state of a source snapshot from 7 October 2026; its workspace path and the statement about uncommitted changes describe that historical snapshot only. They do not describe the current GitHub checkout. This snapshot was not a deployed service and excluded `.git`, `node_modules`, generated build output and local environment files.
