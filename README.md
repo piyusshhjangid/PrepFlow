@@ -35,7 +35,7 @@ docs/            Pipeline docs and architecture decisions (docs/decisions/)
 
 ## Prerequisites
 
-- Node.js 20.11+ (developed on 22) and npm 10+
+- Node.js 22.22.2+, 24.15.0+, or 26.0.0+ and npm 10+. These minimums match the locked runtime and test dependencies.
 - PostgreSQL (developed and tested against 16). A normally installed PostgreSQL is the primary supported path; **Docker is optional**.
 - For local AI: [Ollama](https://ollama.com) (see "AI setup"). For hosted AI: a Google AI Studio API key.
 
