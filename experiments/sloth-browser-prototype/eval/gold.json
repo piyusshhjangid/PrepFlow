@@ -1,0 +1,154 @@
+{
+  "version": "gold-v1",
+  "note": "Reference topics written by the project author from reading each sample BEFORE any model was run on it. Single annotator, not independently reviewed. A gold topic counts as found when a verified topic's NAME matches its regular expression (case-insensitive). 'high' marks topics whose importance the material itself states; 'ambiguous' marks topics where the material contradicts itself, so neither answer is scored. 'referenceOrder' is the order a careful student would study them (prerequisites first, stated weighting early); it is an opinion, which is why agreement with it is reported as a rough indicator only.",
+  "samples": {
+    "01-structured-syllabus": {
+      "topics": [
+        { "id": "relational", "match": "relational|keys" },
+        { "id": "sql", "match": "sql basics|select|query|queries" },
+        { "id": "joins", "match": "join" },
+        { "id": "aggregation", "match": "aggregat|group by", "high": true },
+        { "id": "normalization", "match": "normali|normal form" },
+        { "id": "transactions", "match": "transaction|acid" },
+        { "id": "indexes", "match": "index" }
+      ],
+      "referenceOrder": [
+        "relational",
+        "sql",
+        "aggregation",
+        "joins",
+        "normalization",
+        "transactions",
+        "indexes"
+      ]
+    },
+    "02-dense-lecture-notes": {
+      "topics": [
+        { "id": "process", "match": "process(?! state| scheduling)|control block|pcb" },
+        { "id": "context", "match": "context switch" },
+        { "id": "states", "match": "process state|state" },
+        {
+          "id": "basic-scheduling",
+          "match": "first come|fcfs|shortest job|round robin|scheduling algorithm|cpu scheduling|^scheduling$"
+        },
+        { "id": "priority", "match": "priority|aging|starvation" },
+        { "id": "mlfq", "match": "multilevel|feedback" }
+      ],
+      "referenceOrder": ["process", "states", "context", "basic-scheduling", "priority", "mlfq"]
+    },
+    "03-repeated-overlapping": {
+      "topics": [
+        { "id": "reliability", "match": "reliab|retransmi|tcp(?! congestion)" },
+        { "id": "congestion", "match": "congestion|slow start" },
+        { "id": "udp", "match": "udp" }
+      ],
+      "referenceOrder": ["reliability", "congestion", "udp"]
+    },
+    "04-ambiguous-headings": {
+      "topics": [
+        { "id": "scarcity", "match": "scarcity|opportunity cost" },
+        { "id": "market", "match": "market|equilibrium|demand|supply" },
+        { "id": "elasticity", "match": "elastic" },
+        {
+          "id": "price-controls",
+          "match": "price ceiling|price floor|price control|shortage|surplus"
+        },
+        { "id": "gdp", "match": "gdp|gross domestic" }
+      ],
+      "referenceOrder": ["scarcity", "market", "elasticity", "price-controls", "gdp"]
+    },
+    "05-insufficient-information": { "topics": [], "referenceOrder": [] },
+    "06-many-topics": {
+      "topics": [
+        { "id": "cell-theory", "match": "cell theory", "high": true },
+        { "id": "pro-eu", "match": "prokaryot|eukaryot" },
+        {
+          "id": "membrane-structure",
+          "match": "membrane structure|fluid mosaic|plasma membrane",
+          "high": true
+        },
+        { "id": "transport", "match": "transport|diffusion|osmosis" },
+        { "id": "nucleus", "match": "nucle(us|ar)" },
+        { "id": "ribosomes", "match": "ribosom" },
+        { "id": "endomembrane", "match": "endomembrane|golgi|endoplasmic" },
+        { "id": "mitochondria", "match": "mitochondri", "high": true },
+        { "id": "chloroplasts", "match": "chloroplast" },
+        { "id": "cytoskeleton", "match": "cytoskelet" },
+        { "id": "enzymes", "match": "enzyme", "high": true },
+        { "id": "respiration", "match": "respiration", "high": true },
+        { "id": "photosynthesis", "match": "photosynth" },
+        { "id": "dna-structure", "match": "dna structure|double helix" },
+        { "id": "replication", "match": "replication" },
+        { "id": "transcription", "match": "transcription" },
+        { "id": "translation", "match": "translation", "high": true },
+        { "id": "gene-regulation", "match": "gene regulation|operon" },
+        { "id": "cell-cycle", "match": "cell cycle|mitosis" },
+        { "id": "meiosis", "match": "meiosis" },
+        { "id": "mendel", "match": "mendel|genetics|punnett" },
+        { "id": "mutations", "match": "mutation" }
+      ],
+      "referenceOrder": [
+        "cell-theory",
+        "pro-eu",
+        "membrane-structure",
+        "transport",
+        "nucleus",
+        "ribosomes",
+        "endomembrane",
+        "mitochondria",
+        "chloroplasts",
+        "cytoskeleton",
+        "enzymes",
+        "respiration",
+        "photosynthesis",
+        "dna-structure",
+        "replication",
+        "transcription",
+        "translation",
+        "gene-regulation",
+        "cell-cycle",
+        "meiosis",
+        "mendel",
+        "mutations"
+      ]
+    },
+    "07-long-multichunk": {
+      "topics": [
+        { "id": "memory-hierarchy", "match": "memory hierarchy|cache", "high": true },
+        { "id": "virtual-memory", "match": "virtual memory|paging|page table", "high": true },
+        { "id": "pipelining", "match": "pipelin|hazard" },
+        { "id": "isa", "match": "instruction set|isa|risc|cisc|addressing" },
+        { "id": "io", "match": "input|output|i/o|disk|dma" },
+        { "id": "parallel", "match": "parallel|multiprocessor|multicore|coherence" }
+      ],
+      "referenceOrder": [
+        "memory-hierarchy",
+        "virtual-memory",
+        "pipelining",
+        "isa",
+        "io",
+        "parallel"
+      ]
+    },
+    "08-contradictory-priorities": {
+      "topics": [
+        { "id": "hypothesis", "match": "hypothesis", "ambiguous": true },
+        { "id": "intervals", "match": "confidence interval|effect size" },
+        { "id": "descriptive", "match": "descriptive" },
+        { "id": "regression", "match": "regression" },
+        { "id": "correlation", "match": "correlation" },
+        { "id": "sampling", "match": "sampling|sample" },
+        { "id": "anova", "match": "anova|variance" }
+      ],
+      "referenceOrder": [
+        "descriptive",
+        "sampling",
+        "hypothesis",
+        "intervals",
+        "correlation",
+        "regression",
+        "anova"
+      ]
+    }
+  }
+}

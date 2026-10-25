@@ -1,0 +1,13 @@
+Computer networks revision notes
+
+Section 1: Transport layer. TCP provides reliable, ordered delivery using sequence numbers, acknowledgements and retransmission. TCP congestion control slows the sender when packets are lost, using slow start and then congestion avoidance.
+
+Section 2: Reliability. To be reliable, TCP retransmits segments that are not acknowledged in time. The sender keeps a retransmission timer for each connection.
+
+Section 3: Congestion. Congestion control in TCP works by adjusting the congestion window. During slow start the window doubles every round trip, and after a loss the window is cut and growth becomes linear.
+
+Section 4: UDP. UDP is a simple connectionless protocol with no reliability or congestion control, which makes it suitable for streaming and name lookups.
+
+Recap of Section 1: TCP is reliable and ordered and uses congestion control with slow start and congestion avoidance.
+
+Recap of Section 4: UDP is connectionless and unreliable, used for streaming and DNS.

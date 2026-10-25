@@ -1,4 +1,5 @@
 import type { Chunk } from './chunker.js';
+import type { EvidenceSupport } from './support.js';
 
 /**
  * Evidence verification. The model returns `{ chunkId, quote }`. The application decides whether the
@@ -115,6 +116,10 @@ export interface VerifiedEvidence {
   pageEnd: number | null;
   /** Canonical text taken from the source, not the model's rendering of it. */
   snippet: string;
+  /** Computed by code after checking the quote against the complete source material. */
+  support?: EvidenceSupport;
+  /** Verbatim sentence when the material explicitly says this topic matters for the exam. */
+  importanceCue?: string;
 }
 
 export type EvidenceResult =

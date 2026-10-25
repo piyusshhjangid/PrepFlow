@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="t d" font-family="system-ui, sans-serif" font-size="14">
+  <title id="t">PrepFlow Sloth architecture</title>
+  <desc id="d">Study input flows through extraction, Gemma analysis, schema validation, evidence verification, deterministic prioritization, capacity-aware scheduling and revision into daily execution. Gemma runs in a local Ollama process; everything else runs in the browser.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2f5d4e"/></marker></defs>
+  <rect x="10" y="10" width="520" height="500" rx="12" fill="#f6f3ee" stroke="#9aa5a0"/>
+  <text x="26" y="34" font-weight="700">Browser (React + TypeScript, no backend)</text>
+  <g fill="#fff" stroke="#2f5d4e" stroke-width="1.5">
+    <rect x="40" y="52" width="230" height="40" rx="8"/><rect x="40" y="112" width="230" height="40" rx="8"/>
+    <rect x="40" y="172" width="230" height="40" rx="8"/><rect x="40" y="232" width="230" height="40" rx="8"/>
+    <rect x="40" y="292" width="230" height="40" rx="8"/><rect x="40" y="352" width="230" height="40" rx="8"/>
+    <rect x="40" y="412" width="230" height="40" rx="8"/><rect x="290" y="412" width="220" height="40" rx="8"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="155" y="77">1. Pasted text or text PDF (pdf.js)</text>
+    <text x="155" y="137">2. Chunking (paragraph boundaries)</text>
+    <text x="155" y="197" font-weight="700">3. Gemma topic extraction</text>
+    <text x="155" y="257">4. Schema validation (zod), 1 repair</text>
+    <text x="155" y="317">5. Evidence verification (exact quote)</text>
+    <text x="155" y="377">6. Priority heuristic (deterministic)</text>
+    <text x="155" y="437">7. Capacity-aware scheduler + revision</text>
+    <text x="400" y="437">8. Next step, tasks, progress, export</text>
+  </g>
+  <g stroke="#2f5d4e" stroke-width="2" marker-end="url(#a)" fill="none">
+    <path d="M155 92V112"/><path d="M155 152V172"/><path d="M155 212V232"/><path d="M155 272V292"/><path d="M155 332V352"/><path d="M155 392V412"/><path d="M270 432H290"/>
+  </g>
+  <text x="290" y="200" fill="#566269">Model output is untrusted:</text>
+  <text x="290" y="220" fill="#566269">only verified topics are planned.</text>
+  <text x="290" y="340" fill="#566269">Plan is rebuilt from today on</text>
+  <text x="290" y="360" fill="#566269">every change; state in localStorage.</text>
+  <rect x="560" y="140" width="190" height="110" rx="12" fill="#fff" stroke="#9a6b00" stroke-width="2"/>
+  <text x="655" y="170" text-anchor="middle" font-weight="700">Ollama (local process)</text>
+  <text x="655" y="194" text-anchor="middle">Gemma open-weight model</text>
+  <text x="655" y="216" text-anchor="middle" fill="#566269">default tag: gemma4:e4b</text>
+  <text x="655" y="236" text-anchor="middle" fill="#566269">/api/chat, JSON-schema output</text>
+  <path d="M270 192H560" stroke="#9a6b00" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#a)" fill="none"/>
+  <text x="415" y="184" text-anchor="middle" fill="#9a6b00">same-origin /ollama proxy</text>
+</svg>

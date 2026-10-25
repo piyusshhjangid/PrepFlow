@@ -1,0 +1,47 @@
+{
+  "name": "prepflow-sloth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Give it your syllabus. Get your next step. Local Gemma finds the topics; plain code makes the plan.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "start": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:external": "node scripts/check-external-urls.mjs",
+    "eval": "tsx eval/run.ts",
+    "check": "npm run typecheck && npm run format:check && npm test && npm run build && npm run check:external && npm run eval:offline",
+    "eval:offline": "tsx eval/offline.ts",
+    "eval:smoke": "tsx eval/run.ts --smoke",
+    "check:browser": "node scripts/browser-check.mjs",
+    "mock-ollama": "node scripts/mock-ollama.mjs"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^6.4.299",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^30.1.3",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}

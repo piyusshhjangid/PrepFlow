@@ -1,0 +1,75 @@
+Computer Architecture: lecture notes, weeks 1 to 6
+
+Memory hierarchy
+
+Computer memory is organised as a hierarchy because no single technology is at once fast, large and cheap. Registers sit inside the processor and respond in a fraction of a nanosecond, but a processor has only a few dozen of them. Caches come next: a small first-level cache close to each core, a larger second level, and often a shared third level. Main memory is built from dynamic RAM, which holds gigabytes but takes tens of nanoseconds to answer. Storage devices such as flash drives are larger again and slower by several orders of magnitude.
+
+The hierarchy works only because programs show locality of reference. Temporal locality means that a location used recently is likely to be used again soon, for example a loop counter. Spatial locality means that locations near a recently used one are likely to be used next, for example consecutive elements of an array. A cache exploits both by keeping recently used data and by fetching whole blocks, called cache lines, instead of single bytes.
+
+When the processor finds the data it wants in the cache the access is a hit; otherwise it is a miss and the block must be fetched from the next level. The average memory access time is the hit time plus the miss rate multiplied by the miss penalty. This formula explains why a small improvement in miss rate can matter more than a large improvement in hit time. Misses are classified as compulsory (the first touch of a block), capacity (the working set does not fit) and conflict (too many blocks map to the same set).
+
+Cache organisation determines where a block may be placed. In a direct-mapped cache each block has exactly one possible location, which is simple and fast but suffers conflict misses. A fully associative cache allows any location, which removes conflicts but needs a costly search. A set-associative cache is the compromise used in practice: a block maps to one set and may occupy any of the ways within it, commonly four or eight. When a set is full a replacement policy such as least recently used chooses the victim.
+
+Writes raise a further question. A write-through cache updates memory on every write, which keeps memory consistent but generates heavy traffic. A write-back cache updates only the cached copy and marks it dirty, writing it to memory when the line is evicted. Write-back is faster, but it complicates systems with several processors that must agree on the value of shared data.
+
+Virtual memory
+
+Virtual memory gives every process the illusion of a large private address space. The addresses a program uses are virtual; hardware and the operating system translate them to physical addresses in main memory. This provides protection, because one process cannot name another's memory, and it lets the total size of all programs exceed the physical memory by keeping some pages on disk.
+
+Memory is divided into fixed-size pages, commonly four kilobytes, and physical memory into frames of the same size. A page table maps each virtual page number to a frame number together with bits that record whether the page is present, writable, or recently used. A virtual address is split into a page number, which is looked up, and an offset within the page, which is carried over unchanged.
+
+Because a page table is stored in memory, every access would need two memory references, one for the table and one for the data. The translation lookaside buffer, or TLB, is a small cache of recent translations that avoids this. A TLB hit adds almost no delay; a TLB miss requires a page table walk, which hardware or the operating system performs. Large address spaces make single-level tables too big, so systems use multi-level page tables that allocate the lower levels only where addresses are actually used.
+
+A page fault occurs when a program touches a page that is not present in memory. The operating system suspends the process, finds the page on disk, loads it into a free frame, updates the page table and restarts the instruction. A disk access costs millions of processor cycles, so even a low page fault rate is damaging. If a system has too little memory for its active processes it spends most of its time swapping pages in and out, a condition called thrashing.
+
+When no frame is free the system must evict a page. The optimal policy would remove the page that will not be needed for the longest time, but it requires knowledge of the future and serves only as a yardstick. Practical policies approximate least recently used, for instance with a reference bit that is cleared periodically, as in the clock algorithm. First in, first out is simple but can show Belady's anomaly, where adding frames increases the number of faults.
+
+Instruction pipelining
+
+A pipeline overlaps the execution of several instructions in the way an assembly line overlaps the building of several cars. A classic five-stage pipeline divides an instruction into fetch, decode, execute, memory access and write back. Once the pipeline is full, one instruction completes every clock cycle, so throughput improves by up to a factor equal to the number of stages, although the latency of each instruction does not shrink.
+
+Pipelines suffer from hazards that force stalls. A structural hazard arises when two instructions need the same hardware in the same cycle, for example a single memory port used for both fetching instructions and loading data. A data hazard arises when an instruction needs a result that an earlier instruction has not yet produced. A control hazard arises after a branch, because the processor does not know which instruction to fetch next until the branch is resolved.
+
+Forwarding, also called bypassing, reduces data hazard stalls by sending a result directly from the stage that produces it to the stage that needs it, without waiting for write back. Forwarding cannot remove every stall: a load followed immediately by an instruction that uses the loaded value still needs a one-cycle bubble, called a load-use stall. Compilers try to schedule an independent instruction into that slot.
+
+Branches are handled by prediction. The simplest scheme always predicts not taken. A one-bit predictor remembers the last outcome of each branch, but it mispredicts twice at the end of every loop. A two-bit saturating counter needs two wrong guesses in a row to change its prediction, which suits loops better. Modern processors combine history registers with large tables to reach accuracy above ninety-five percent on typical code, because a misprediction in a deep pipeline wastes many cycles.
+
+Beyond a single pipeline, superscalar processors issue several instructions per cycle and use out-of-order execution to run later instructions while earlier ones wait for data. Register renaming removes false dependences between instructions that merely reuse the same register name. The results are committed in program order so that exceptions and interrupts still appear precise to the programmer.
+
+Instruction set design
+
+An instruction set architecture is the contract between hardware and software. It defines the registers, the instructions, the addressing modes and the memory model that a programmer or compiler can rely on. Two broad traditions exist. Complex instruction set computers provide powerful instructions that may do several things, such as loading from memory and adding in one step. Reduced instruction set computers keep instructions simple and uniform, which makes them easier to pipeline.
+
+RISC designs typically use a load-store architecture in which only load and store instructions touch memory and all arithmetic works on registers. Instructions have a fixed length, which simplifies fetching and decoding, and there are many general-purpose registers. CISC designs such as x86 allow variable-length instructions and memory operands, which gives dense code, but modern x86 processors internally translate instructions into simpler micro-operations.
+
+Addressing modes describe how an instruction finds its operands. Immediate addressing places a constant in the instruction itself. Register addressing names a register. Base plus displacement addressing adds a constant offset to a register and is the workhorse for accessing fields of structures and local variables on the stack. Indexed and scaled addressing support arrays by multiplying an index register by the element size.
+
+Procedure calls rely on a convention that says which registers carry arguments, which hold the return value, and which the callee must preserve. The call instruction saves the return address, either in a register or on the stack. A stack frame holds saved registers and local variables, and the stack pointer and frame pointer delimit it. Following the convention is what allows separately compiled code to work together.
+
+Design choices have measurable consequences. The processor performance equation says execution time equals instruction count multiplied by cycles per instruction multiplied by clock period. Changing the instruction set may reduce instruction count but raise cycles per instruction, so the product, not any single factor, must be judged. Amdahl's law adds a warning: the overall gain from improving part of a system is limited by the fraction of time that part is actually used.
+
+Input and output
+
+Input and output devices vary enormously in speed, from a keyboard producing a few bytes a second to a network adapter or storage device moving gigabytes a second. The operating system hides this variety behind a small set of abstractions and uses device drivers to talk to the hardware through registers and memory-mapped regions.
+
+There are three ways to move data. In programmed I/O the processor polls a status register until the device is ready, which wastes time. In interrupt-driven I/O the device signals the processor when it needs attention, so the processor can do other work in between, though each interrupt has a fixed cost. In direct memory access, or DMA, a controller transfers a whole block between the device and memory and interrupts the processor only when the transfer is complete.
+
+Disks illustrate the performance issues. The time to read a block from a magnetic disk is the sum of the seek time to move the head, the rotational delay waiting for the sector, and the transfer time. Seek and rotation dominate, so scheduling requests in an order that reduces head movement, for example the elevator algorithm, improves throughput. Flash storage has no moving parts and no seek time, but it must erase large blocks before rewriting and wears out after many writes.
+
+Redundant arrays of independent disks combine several drives for speed or safety. Striping spreads consecutive blocks across drives to increase bandwidth. Mirroring keeps a copy of each block on a second drive so that one failure loses nothing. Parity schemes store a computed check block so that any single failed drive can be reconstructed from the others, at the cost of slower small writes.
+
+Buses and interconnects carry the traffic. A bus is shared and therefore needs arbitration to decide which device may use it. Modern systems replace shared buses with point-to-point serial links that run at very high speed and avoid the electrical limits of wide parallel buses. The choice of interconnect affects latency, bandwidth, cost and the number of devices that can be attached.
+
+Parallel processors
+
+Single processors stopped getting faster at the old rate because power and heat limit the clock frequency. Designers now add more cores instead, and software must be written to use them. A program gains from extra cores only to the extent that its work can be divided into parts that run at the same time, which is the practical meaning of Amdahl's law for parallel machines.
+
+In a shared-memory multiprocessor all cores see one address space and communicate by reading and writing shared variables. Because each core has its own cache, the system needs a cache coherence protocol so that every core sees a consistent value. In an invalidation-based snooping protocol, a core that wants to write a block first broadcasts a message that makes other copies invalid. The MESI protocol labels each cached block modified, exclusive, shared or invalid.
+
+Threads that share data need synchronisation. A lock gives one thread at a time access to a critical section, and a barrier makes all threads wait until each has reached a given point. Incorrect synchronisation causes race conditions, in which the result depends on timing, and deadlock, in which threads wait for each other forever. Atomic instructions such as compare-and-swap are the hardware building blocks for locks and for lock-free data structures.
+
+Another model is message passing, where each processor has private memory and communicates by sending messages, as in clusters of separate computers. It scales to thousands of nodes but makes the programmer responsible for dividing the data and for moving it. Graphics processors take a third approach, running thousands of lightweight threads in lock step on the same instruction, which suits problems with regular data parallelism such as image processing and matrix multiplication.
+
+Performance of parallel programs is judged with speedup and efficiency. Speedup is the execution time on one processor divided by the time on many. Strong scaling keeps the problem size fixed and adds processors; weak scaling grows the problem with the number of processors. Overheads such as communication, load imbalance and synchronisation explain why measured speedup usually falls short of the ideal.
+
+Revision hint. Cache organisation and virtual memory are the two topics most often examined, and each is worth about a quarter of the exam marks.

@@ -161,6 +161,8 @@ export interface PersistedTopic {
     page: number | null;
     pageEnd: number | null;
     snippet: string;
+    support?: 'direct' | 'nearby' | 'weak';
+    importanceCue?: string;
   }[];
 }
 

@@ -85,7 +85,41 @@ describe('analysis service', () => {
     expect(deadlocks).toMatchObject({ isWeak: true, weakHint: 'Deadlocks', difficulty: 'HARD' });
     expect(deadlocks?.estimatedMinutes).toBeGreaterThan(45);
     expect(deadlocks?.evidence[0]?.snippet).toContain('Deadlocks occur');
+    expect(deadlocks?.evidence[0]?.support).toBe('direct');
+    expect(deadlocks?.importance).toBe('MEDIUM');
+    expect(deadlocks?.statedEmphasis).toBe(false);
     expect(analysisRepo.runs.size).toBe(1);
+  });
+
+  it('keeps high importance only when the material provides an exam signal', async () => {
+    const material =
+      '📚 Course notes\n\nBinary search is frequently tested on the final exam. It repeatedly halves the search interval.';
+    const provider = new FakeAiProvider((request) => {
+      const { chunkId, material: chunkText } = readPrompt(request);
+      const quote = 'Binary search is frequently tested on the final exam.';
+      expect(chunkText).toContain(quote);
+      return response([
+        {
+          name: 'Algorithms',
+          topics: [
+            topic(chunkId, quote, {
+              name: 'Binary search',
+              importance: 'HIGH',
+              statedEmphasis: true,
+            }),
+          ],
+        },
+      ]);
+    });
+    const { analysis, exam } = await setup(provider, [material]);
+    await analysis.start(exam.id);
+    await analysis.whenIdle();
+    const result = await analysis.getResult(exam.id);
+    const binarySearch = result.subjects.flatMap((subject) => subject.topics)[0];
+    expect(binarySearch).toMatchObject({ importance: 'HIGH', statedEmphasis: true });
+    expect(binarySearch?.evidence[0]?.importanceCue).toBe(
+      'Binary search is frequently tested on the final exam.',
+    );
   });
 
   it('stores no prompts or raw responses on the run', async () => {

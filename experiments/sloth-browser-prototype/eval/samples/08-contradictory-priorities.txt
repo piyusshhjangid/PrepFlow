@@ -1,0 +1,15 @@
+Statistics for Psychology: course notes and exam hints (compiled from three different years)
+
+Note from 2023 handout. Hypothesis testing is the most important topic in the course, because every later method depends on it. The exam always contains a long question on hypothesis testing. Students should be able to state a null hypothesis, choose a significance level and interpret a p-value.
+
+Note from 2024 handout. Hypothesis testing will be assessed only lightly this year, since the new syllabus moves the emphasis to effect sizes and confidence intervals. Confidence intervals give a range of plausible values for a population parameter, and an effect size such as Cohen's d measures how large a difference is in standard deviation units.
+
+Note from 2025 handout. Descriptive statistics are not examined, so skip them: they are assumed knowledge. The mean, median and standard deviation summarise a sample, and a histogram shows its distribution.
+
+Regression. Simple linear regression fits a straight line to predict one variable from another, and the coefficient of determination shows how much variance the line explains. Correlation is not causation; a strong correlation can arise from a third variable.
+
+Correlation and association. The Pearson correlation coefficient measures the strength and direction of a linear relationship between two variables, from minus one to plus one.
+
+Sampling. A random sample lets us generalise to a population, while a convenience sample may be biased. Larger samples reduce the standard error of the mean.
+
+ANOVA. Analysis of variance compares the means of three or more groups using the F statistic. It is mentioned in the syllabus but the lecturer said it is probably not worth revising for this exam.

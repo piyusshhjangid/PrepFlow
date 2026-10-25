@@ -1,0 +1,469 @@
+{
+  "node": "v22.22.0",
+  "gold": "gold-v1",
+  "samples": 8,
+  "baselineMean": {
+    "recall": 0.5714285714285714,
+    "precision": 0.75,
+    "highRecall": 1,
+    "highPrecision": 1,
+    "orderAgreement": 0.9426406926406926
+  },
+  "baseline": [
+    {
+      "id": "01-structured-syllabus",
+      "m": {
+        "goldTopics": 7,
+        "goldFound": 7,
+        "recall": 1,
+        "verifiedTopics": 7,
+        "precision": 1,
+        "candidates": 7,
+        "evidencePassRate": 1,
+        "fabricatedRate": 0,
+        "weakSupportRate": 0,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": 0,
+        "residualDuplicatePairs": 0,
+        "highRecall": 1,
+        "highPrecision": 1,
+        "orderAgreement": 0.9047619047619048,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 6,
+          "overflow": 3,
+          "overflowFixable": 3
+        }
+      }
+    },
+    {
+      "id": "02-dense-lecture-notes",
+      "m": {
+        "goldTopics": 6,
+        "goldFound": 0,
+        "recall": 0,
+        "verifiedTopics": 0,
+        "precision": null,
+        "candidates": 0,
+        "evidencePassRate": null,
+        "fabricatedRate": null,
+        "weakSupportRate": null,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": null,
+        "residualDuplicatePairs": 0,
+        "highRecall": null,
+        "highPrecision": null,
+        "orderAgreement": null,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 9,
+          "overflow": 0,
+          "overflowFixable": 0
+        }
+      }
+    },
+    {
+      "id": "03-repeated-overlapping",
+      "m": {
+        "goldTopics": 3,
+        "goldFound": 3,
+        "recall": 1,
+        "verifiedTopics": 4,
+        "precision": 0.75,
+        "candidates": 4,
+        "evidencePassRate": 1,
+        "fabricatedRate": 0,
+        "weakSupportRate": 0,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": 0,
+        "residualDuplicatePairs": 0,
+        "highRecall": null,
+        "highPrecision": null,
+        "orderAgreement": 1,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 6,
+          "overflow": 3,
+          "overflowFixable": 3
+        }
+      }
+    },
+    {
+      "id": "04-ambiguous-headings",
+      "m": {
+        "goldTopics": 5,
+        "goldFound": 0,
+        "recall": 0,
+        "verifiedTopics": 5,
+        "precision": 0,
+        "candidates": 5,
+        "evidencePassRate": 1,
+        "fabricatedRate": 0,
+        "weakSupportRate": 0,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": 0,
+        "residualDuplicatePairs": 0,
+        "highRecall": null,
+        "highPrecision": null,
+        "orderAgreement": null,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 6,
+          "overflow": 3,
+          "overflowFixable": 3
+        }
+      }
+    },
+    {
+      "id": "05-insufficient-information",
+      "m": {
+        "goldTopics": 0,
+        "goldFound": 0,
+        "recall": null,
+        "verifiedTopics": 0,
+        "precision": null,
+        "candidates": 0,
+        "evidencePassRate": null,
+        "fabricatedRate": null,
+        "weakSupportRate": null,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": null,
+        "residualDuplicatePairs": 0,
+        "highRecall": null,
+        "highPrecision": null,
+        "orderAgreement": null,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 9,
+          "overflow": 0,
+          "overflowFixable": 0
+        }
+      }
+    },
+    {
+      "id": "06-many-topics",
+      "m": {
+        "goldTopics": 22,
+        "goldFound": 22,
+        "recall": 1,
+        "verifiedTopics": 22,
+        "precision": 1,
+        "candidates": 22,
+        "evidencePassRate": 1,
+        "fabricatedRate": 0,
+        "weakSupportRate": 0,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": 0,
+        "residualDuplicatePairs": 0,
+        "highRecall": 1,
+        "highPrecision": 1,
+        "orderAgreement": 0.8658008658008658,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 1,
+          "overflow": 8,
+          "overflowFixable": 8
+        }
+      }
+    },
+    {
+      "id": "07-long-multichunk",
+      "m": {
+        "goldTopics": 6,
+        "goldFound": 6,
+        "recall": 1,
+        "verifiedTopics": 6,
+        "precision": 1,
+        "candidates": 6,
+        "evidencePassRate": 1,
+        "fabricatedRate": 0,
+        "weakSupportRate": 0,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": 0,
+        "residualDuplicatePairs": 0,
+        "highRecall": 1,
+        "highPrecision": 1,
+        "orderAgreement": 1,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 2,
+          "overflow": 7,
+          "overflowFixable": 7
+        }
+      }
+    },
+    {
+      "id": "08-contradictory-priorities",
+      "m": {
+        "goldTopics": 7,
+        "goldFound": 0,
+        "recall": 0,
+        "verifiedTopics": 0,
+        "precision": null,
+        "candidates": 0,
+        "evidencePassRate": null,
+        "fabricatedRate": null,
+        "weakSupportRate": null,
+        "firstTryValidRate": null,
+        "duplicateProposalRate": null,
+        "residualDuplicatePairs": 0,
+        "highRecall": null,
+        "highPrecision": null,
+        "orderAgreement": null,
+        "scenarios": {
+          "scenarios": 9,
+          "capacityViolations": 0,
+          "otherViolations": 0,
+          "fitsAll": 9,
+          "overflow": 0,
+          "overflowFixable": 0
+        }
+      }
+    }
+  ],
+  "faults": [
+    {
+      "id": "control",
+      "fault": "none (valid reply)",
+      "requirement": "all 5 topics verified, no repair",
+      "observed": "5 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "fenced-prose",
+      "fault": "JSON wrapped in prose and a code fence",
+      "requirement": "parsed without a repair call",
+      "observed": "5 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "trailing-commas",
+      "fault": "trailing commas",
+      "requirement": "parsed without a repair call",
+      "observed": "5 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "truncated",
+      "fault": "reply cut off mid-object (output limit)",
+      "requirement": "complete topics are kept and counted as salvaged",
+      "observed": "3 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "not-json-then-valid",
+      "fault": "first reply is not JSON",
+      "requirement": "exactly one repair, then success",
+      "observed": "5 verified / 0 held back, 2 call(s)",
+      "pass": true
+    },
+    {
+      "id": "never-json",
+      "fault": "every reply is not JSON",
+      "requirement": "bounded: 2 calls, a fixed error, no topics invented",
+      "observed": "error ANALYSIS_FAILED, 2 call(s)",
+      "pass": true
+    },
+    {
+      "id": "fabricated-quotes",
+      "fault": "quotes that are not in the material",
+      "requirement": "every topic held back, none planned",
+      "observed": "0 verified / 3 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "altered-word",
+      "fault": "a real quote with one word changed",
+      "requirement": "held back (approximate matches are never accepted)",
+      "observed": "0 verified / 1 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "ellipsis-quote",
+      "fault": "two passages joined with an ellipsis",
+      "requirement": "held back as not contiguous",
+      "observed": "0 verified / 1 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "spliced-quote",
+      "fault": "halves of two different passages glued together",
+      "requirement": "held back",
+      "observed": "0 verified / 1 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "too-short-quote",
+      "fault": "a quote too short to prove anything",
+      "requirement": "held back",
+      "observed": "0 verified / 1 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "duplicates",
+      "fault": "the same topic proposed three times with different wording",
+      "requirement": "merged into one",
+      "observed": "1 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "inflated-importance",
+      "fault": "every topic marked high importance",
+      "requirement": "only the topic the material weights keeps \"high\"",
+      "observed": "5 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "unrelated-quote",
+      "fault": "a real quote that does not talk about the topic",
+      "requirement": "kept but flagged as weakly supported",
+      "observed": "1 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "injection-obeyed",
+      "fault": "a model that obeys instructions hidden in the material and invents a topic",
+      "requirement": "the invented quote is held back",
+      "observed": "5 verified / 1 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "cyclic-prerequisites",
+      "fault": "prerequisites that form a cycle",
+      "requirement": "cycle broken so the planner sees a DAG",
+      "observed": "2 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "unknown-prerequisite",
+      "fault": "a prerequisite that is not a topic",
+      "requirement": "dropped and counted",
+      "observed": "1 verified / 0 held back, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "one-timeout",
+      "fault": "one timeout, then a good reply",
+      "requirement": "retried once and succeeded",
+      "observed": "5 verified / 0 held back, 2 call(s)",
+      "pass": true
+    },
+    {
+      "id": "persistent-timeout",
+      "fault": "the model always times out",
+      "requirement": "bounded retries, then a fixed error and no partial plan",
+      "observed": "error ANALYSIS_FAILED, 2 call(s)",
+      "pass": true
+    },
+    {
+      "id": "model-missing",
+      "fault": "the model is not installed",
+      "requirement": "stops at once with MODEL_NOT_FOUND (no retries)",
+      "observed": "error MODEL_NOT_FOUND, 1 call(s)",
+      "pass": true
+    },
+    {
+      "id": "empty-topic-list",
+      "fault": "valid JSON with no topics",
+      "requirement": "not an error: zero topics, no invented ones",
+      "observed": "0 verified / 0 held back, 2 call(s)",
+      "pass": true
+    }
+  ],
+  "mutations": [
+    {
+      "id": "exact",
+      "expect": "accept",
+      "n": 198,
+      "accepted": 198,
+      "correct": 198,
+      "description": "the sentence unchanged"
+    },
+    {
+      "id": "noise",
+      "expect": "accept",
+      "n": 198,
+      "accepted": 198,
+      "correct": 198,
+      "description": "upper case, doubled spaces, curly apostrophes"
+    },
+    {
+      "id": "hyphenated",
+      "expect": "accept",
+      "n": 193,
+      "accepted": 193,
+      "correct": 193,
+      "description": "source has a word split across a line break with a hyphen"
+    },
+    {
+      "id": "trimmed",
+      "expect": "accept",
+      "n": 195,
+      "accepted": 195,
+      "correct": 195,
+      "description": "first two words dropped (still one contiguous passage)"
+    },
+    {
+      "id": "word-changed",
+      "expect": "reject",
+      "n": 198,
+      "accepted": 0,
+      "correct": 198,
+      "description": "one middle word replaced"
+    },
+    {
+      "id": "words-swapped",
+      "expect": "reject",
+      "n": 198,
+      "accepted": 0,
+      "correct": 198,
+      "description": "two adjacent words swapped"
+    },
+    {
+      "id": "spliced",
+      "expect": "reject",
+      "n": 198,
+      "accepted": 0,
+      "correct": 198,
+      "description": "first half of one sentence + second half of another"
+    },
+    {
+      "id": "ellipsis",
+      "expect": "reject",
+      "n": 198,
+      "accepted": 0,
+      "correct": 198,
+      "description": "beginning … end of one sentence"
+    },
+    {
+      "id": "appended",
+      "expect": "reject",
+      "n": 198,
+      "accepted": 0,
+      "correct": 198,
+      "description": "a plausible extra clause added"
+    }
+  ],
+  "planner": {
+    "scenarios": 2000,
+    "capacity": 0,
+    "other": 0,
+    "overflow": 1243,
+    "overflowFixable": 977,
+    "unsuggestable": 266
+  }
+}

@@ -1,0 +1,18 @@
+PASS  status chip shows the runtime is up and the model is installed
+PASS  analysis completes and shows the next step
+PASS  focus moves to "Your next step" after analysis  (Your next step)
+PASS  the fabricated mock topic is held back, not planned
+PASS  no request left the app origin  (6 requests)
+PASS  model traffic only uses the same-origin /ollama proxy  (/ollama/api/chat, /ollama/api/tags)
+PASS  progress survives a reload  (45 of 480 planned study minutes done · 7 h 15 min left · 7 study day(s) until the exam)
+PASS  no horizontal overflow at 1280px
+PASS  no horizontal overflow at 768px
+PASS  no horizontal overflow at 430px
+PASS  no horizontal overflow at 390px
+PASS  "Start over" removes material, topics and progress from storage
+PASS  Ollama down: clear error, material kept
+PASS  Ollama down: outline mode still produces a plan, labelled as no AI
+PASS  sample mode works with the runtime down and is labelled hand-written
+PASS  no console or page errors
+
+16/16 checks passed

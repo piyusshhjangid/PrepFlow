@@ -1,0 +1,16 @@
+Economics notes
+
+Basics
+Scarcity means resources are limited while wants are unlimited, so every choice has an opportunity cost. The opportunity cost of an option is the value of the next best alternative that was given up.
+
+More basics
+A market brings buyers and sellers together. When the price rises, the quantity demanded usually falls and the quantity supplied usually rises. The equilibrium price is where the two quantities are equal.
+
+Part 2
+Elasticity measures how strongly quantity responds to a change in price. If demand is elastic, a price rise reduces total revenue; if demand is inelastic, a price rise increases total revenue.
+
+Misc
+Governments sometimes set a price ceiling below the equilibrium price, which can create a shortage. A price floor above equilibrium can create a surplus.
+
+Other
+Gross domestic product measures the total value of final goods and services produced in a country in a year.

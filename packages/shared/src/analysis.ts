@@ -66,6 +66,10 @@ export const topicEvidenceSchema = z.object({
   pageEnd: z.number().nullable(),
   /** Canonical text from the source material. */
   snippet: z.string(),
+  /** Advisory link between the topic name and quote; absent on evidence saved by older versions. */
+  support: z.enum(['direct', 'nearby', 'weak']).optional(),
+  /** Verbatim source sentence that explicitly signals exam importance. */
+  importanceCue: z.string().max(200).optional(),
 });
 export type TopicEvidence = z.infer<typeof topicEvidenceSchema>;
 

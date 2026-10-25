@@ -11,8 +11,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate } from 'react-router';
 import { api } from '../api/endpoints';
 import { ApiError } from '../api/http';
+import { EvidenceList } from '../components/Evidence';
 import { Alert, Button, Card, LinkButton } from '../components/ui';
-import { formatMinutes, formatPageRef, plural } from '../lib/format';
+import { formatMinutes, plural } from '../lib/format';
 import { clearExamId, getExamId } from '../workspace';
 
 /** How often the page asks the server for the run's real state while it is active. */
@@ -430,6 +431,12 @@ function TopicRow({
       </div>
       {topic.parent && <p className="text-xs text-slate-500">Part of: {topic.parent}</p>}
       {topic.description && <p className="mt-1 text-sm text-slate-700">{topic.description}</p>}
+      {!topic.statedEmphasis && topic.evidence.some((item) => item.support) && (
+        <p className="mt-1 text-xs text-slate-600">
+          No exam-importance wording was found in the material, so this topic has no
+          material-emphasis boost.
+        </p>
+      )}
       <div className="mt-2 flex flex-wrap gap-1.5">
         <Badge title="Difficulty" value={topic.difficulty} />
         <Badge title="Importance" value={topic.importance} />
@@ -446,21 +453,7 @@ function TopicRow({
       {topic.prerequisites.length > 0 && (
         <p className="mt-1 text-xs text-slate-500">Needs first: {topic.prerequisites.join(', ')}</p>
       )}
-      <details className="mt-2">
-        <summary className="cursor-pointer text-xs font-medium text-indigo-700">
-          Evidence ({topic.evidence.length})
-        </summary>
-        <ul className="mt-2 space-y-2">
-          {topic.evidence.map((item, index) => (
-            <li key={index} className="rounded border-l-2 border-indigo-300 bg-slate-50 px-3 py-2">
-              <blockquote className="text-sm text-slate-800">“{item.snippet}”</blockquote>
-              <p className="mt-1 text-xs text-slate-500">
-                {item.materialName ?? 'Pasted text'} · {formatPageRef(item.page, item.pageEnd)}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </details>
+      <EvidenceList evidence={topic.evidence} />
       <fieldset className="mt-3 rounded-md border border-slate-200 p-3">
         <legend className="px-1 text-xs font-semibold text-slate-700">Review this topic</legend>
         <div className="flex flex-wrap items-end gap-3">
