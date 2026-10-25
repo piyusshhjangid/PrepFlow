@@ -1,0 +1,11 @@
+CS 220: Introduction to Databases. Course syllabus.
+
+Week 1 - Relational model. Tables, rows, columns, primary keys and foreign keys. Students learn how relations represent real-world entities.
+Week 2 - SQL basics. SELECT, WHERE, ORDER BY and LIMIT. Writing queries that filter and sort a single table.
+Week 3 - Joins. Inner joins, outer joins and self joins. Combining rows from several tables, with emphasis on choosing the correct join type.
+Week 4 - Aggregation. GROUP BY, HAVING and the aggregate functions COUNT, SUM and AVG. This topic carries 20 percent of the final exam.
+Week 5 - Normalization. First, second and third normal form. Removing redundancy and update anomalies from a schema design.
+Week 6 - Transactions. The ACID properties, commit and rollback. Why concurrent updates need isolation.
+Week 7 - Indexes. B-tree indexes and how they speed up lookups. The cost of indexes on write-heavy tables.
+
+Assessment: final exam 60 percent, project 30 percent, quizzes 10 percent.

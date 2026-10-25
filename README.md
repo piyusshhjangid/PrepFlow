@@ -31,7 +31,12 @@ apps/api         Express + TypeScript + Prisma backend (AI layer in src/ai)
 apps/web         React + TypeScript + Vite + Tailwind frontend
 packages/shared  Zod schemas and types shared by both
 docs/            Pipeline docs and architecture decisions (docs/decisions/)
+experiments/sloth-browser-prototype  Preserved standalone prototype and its separate evaluation suite
 ```
+
+The supported application is the full-stack monorepo described above. The Sloth prototype is kept for its
+browser-only implementation, evidence-support checks, and reproducible evaluation artifacts; its metrics do not
+measure the full-stack app. See [the consolidation notes](docs/sloth-branch-consolidation.md).
 
 ## Prerequisites
 

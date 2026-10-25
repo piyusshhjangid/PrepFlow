@@ -11,6 +11,7 @@ export default tseslint.config(
       '**/coverage/**',
       'apps/api/prisma/migrations/**',
       'apps/api/.sandbox/**',
+      'experiments/sloth-browser-prototype/**',
     ],
   },
   js.configs.recommended,

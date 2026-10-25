@@ -1,0 +1,75 @@
+{
+  "note": "Original sample materials written for this project (MIT licensed with the repository). expectedKeywords are what a good topic list should mention; they are a rough human-written yardstick, not a gold standard.",
+  "samples": [
+    {
+      "id": "01-structured-syllabus",
+      "kind": "structured syllabus",
+      "file": "samples/01-structured-syllabus.txt",
+      "expectedKeywords": [
+        "relational",
+        "sql",
+        "join",
+        "aggregat",
+        "normaliz",
+        "transaction",
+        "index"
+      ],
+      "expectedTopicRange": [5, 9]
+    },
+    {
+      "id": "02-dense-lecture-notes",
+      "kind": "dense lecture notes",
+      "file": "samples/02-dense-lecture-notes.txt",
+      "expectedKeywords": ["process", "context switch", "scheduling", "round robin", "priority"],
+      "expectedTopicRange": [3, 9]
+    },
+    {
+      "id": "03-repeated-overlapping",
+      "kind": "repeated and overlapping topics",
+      "file": "samples/03-repeated-overlapping.txt",
+      "expectedKeywords": ["tcp", "congestion", "udp"],
+      "expectedTopicRange": [2, 5]
+    },
+    {
+      "id": "04-ambiguous-headings",
+      "kind": "ambiguous headings",
+      "file": "samples/04-ambiguous-headings.txt",
+      "expectedKeywords": [
+        "opportunity cost",
+        "equilibrium",
+        "elastic",
+        "price ceiling",
+        "gdp|gross domestic"
+      ],
+      "expectedTopicRange": [4, 8]
+    },
+    {
+      "id": "05-insufficient-information",
+      "kind": "insufficient information",
+      "file": "samples/05-insufficient-information.txt",
+      "expectedKeywords": [],
+      "expectedTopicRange": [0, 2]
+    },
+    {
+      "id": "06-many-topics",
+      "kind": "many topics (22 items)",
+      "file": "samples/06-many-topics.txt",
+      "expectedKeywords": ["cell theory", "mitochondri", "enzyme", "translation", "meiosis"],
+      "expectedTopicRange": [15, 25]
+    },
+    {
+      "id": "07-long-multichunk",
+      "kind": "long document (several chunks)",
+      "file": "samples/07-long-multichunk.txt",
+      "expectedKeywords": ["cache", "virtual memory", "pipelin", "parallel"],
+      "expectedTopicRange": [5, 12]
+    },
+    {
+      "id": "08-contradictory-priorities",
+      "kind": "contradictory priority statements",
+      "file": "samples/08-contradictory-priorities.txt",
+      "expectedKeywords": ["hypothesis", "confidence|effect size", "regression", "correlation"],
+      "expectedTopicRange": [5, 9]
+    }
+  ]
+}

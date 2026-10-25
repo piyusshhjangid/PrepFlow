@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+*.tsbuildinfo
+coverage/
+eval/results/*.json
+!eval/results/.gitkeep
+!eval/results/offline-latest.json

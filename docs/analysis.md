@@ -17,7 +17,7 @@ See also the decisions in [docs/decisions/](decisions/). Ingestion is described 
    dropped and counted; if nothing usable came back, one **repair** attempt is made, then the chunk fails.
 6. **Evidence** (`evidence.ts`): chunk id must match; quote ≥ 20 chars and ≥ 3 words, ≤ 600, no ellipsis; found in the chunk after conservative normalization.
    Pages come from the chunk's segment map. The snippet stored is the source text. Topics with no valid evidence are dropped.
-7. **Validating** re-checks every snippet against the full material text. **Merging** (`merge.ts`) groups subjects/topics by normalized name similarity, combines
+7. **Validating** re-checks every snippet against the full material text and labels its topic link as `direct`, `nearby`, or `weak` using deterministic word overlap in the quote and paragraph. This is an advisory signal only: a weak link is still visibly verified source evidence and is never silently discarded. Code also searches the source for exam-importance wording; an unsupported model `HIGH` is lowered to `MEDIUM`, and the verbatim importance cue is shown with the evidence. **Merging** (`merge.ts`) groups subjects/topics by normalized name similarity, combines
    attributes deterministically, de-duplicates evidence (max 5), and matches weak-topic hints (a model claim must be corroborated by name overlap).
    **Effort** (`effort.ts`): `minutes = base(effort class) × difficulty × importance × (1 + 0.2 × revisionWeight)`, rounded to 5, clamped to 10–240.
 8. **Persisting**: one transaction replaces the exam's subjects/topics and finalizes the run. Statuses: `SUCCEEDED`, `PARTIAL` (some chunk failed), `FAILED`.

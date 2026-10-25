@@ -17,6 +17,11 @@ import {
   type RetryConfig,
 } from '../ai/analysis/config.js';
 import { normalizeWithMap } from '../ai/analysis/evidence.js';
+import {
+  classifyEvidenceSupport,
+  extractImportanceSentences,
+  findImportanceCue,
+} from '../ai/analysis/support.js';
 import { mergeTopics, nameKey } from '../ai/analysis/merge.js';
 import type { Sleep } from '../ai/analysis/retry.js';
 import { AiProviderFailure, type AiProvider } from '../ai/provider.js';
@@ -519,6 +524,8 @@ export function createAnalysisService(deps: AnalysisServiceDeps) {
             page: e.page,
             pageEnd: e.pageEnd,
             snippet: e.snippet,
+            support: e.support,
+            importanceCue: e.importanceCue,
           })),
         })),
       }));
@@ -577,32 +584,114 @@ export function verifyAgainstMaterials(
   materials: readonly Pick<AnalysisMaterial, 'id' | 'extractedText' | 'sourceType'>[],
 ): { kept: ValidatedTopic[]; removed: number } {
   const haystacks = new Map<string, string>();
+  const normalizedSources = new Map<string, ReturnType<typeof normalizeWithMap>>();
+  const normalizedOffsets = new Map<string, number[]>();
+  const importanceSentences = new Map<string, string[]>();
+  const materialById = new Map(materials.map((material) => [material.id, material]));
   const haystackFor = (id: string): string | undefined => {
     if (!haystacks.has(id)) {
-      const material = materials.find((m) => m.id === id);
+      const material = materialById.get(id);
       if (!material) return undefined;
-      // Pages are separated by form feeds; evidence never spans more than the joined text anyway.
-      haystacks.set(
-        id,
-        normalizeWithMap(material.extractedText.replace(/\f/g, '\n\n'))
-          .map((c) => c.ch)
-          .join(''),
-      );
+      const normalized = normalizeWithMap(material.extractedText);
+      normalizedSources.set(id, normalized);
+      haystacks.set(id, normalized.map((c) => c.ch).join(''));
+      let offset = 0;
+      const offsets = [0];
+      for (const character of normalized) {
+        offset += character.ch.length;
+        offsets.push(offset);
+      }
+      normalizedOffsets.set(id, offsets);
     }
     return haystacks.get(id);
   };
   const kept: ValidatedTopic[] = [];
   let removed = 0;
   for (const topic of topics) {
-    const evidence = topic.evidence.filter((e) => {
-      const hay = haystackFor(e.materialId);
-      const needle = normalizeWithMap(e.snippet)
-        .map((c) => c.ch)
-        .join('');
-      return hay !== undefined && hay.includes(needle);
-    });
+    const evidence = topic.evidence
+      .filter((e) => {
+        const hay = haystackFor(e.materialId);
+        const needle = normalizeWithMap(e.snippet)
+          .map((c) => c.ch)
+          .join('');
+        return hay !== undefined && hay.includes(needle);
+      })
+      .map((e) => {
+        const material = materialById.get(e.materialId);
+        const normalized = normalizedSources.get(e.materialId);
+        const offsets = normalizedOffsets.get(e.materialId);
+        const hay = haystackFor(e.materialId);
+        const needle = normalizeWithMap(e.snippet)
+          .map((c) => c.ch)
+          .join('');
+        if (!material || !normalized || !offsets || !hay || needle.length === 0) return e;
+        const rank = { weak: 0, nearby: 1, direct: 2 } as const;
+        let bestSupport: 'direct' | 'nearby' | 'weak' = 'weak';
+        let bestCue: string | null = null;
+        let searchFrom = 0;
+        let occurrences = 0;
+        while (searchFrom < hay.length) {
+          const at = hay.indexOf(needle, searchFrom);
+          if (at < 0) break;
+          const first = normalized[lowerBound(offsets, at, true) - 1];
+          const last = normalized[lowerBound(offsets, at + needle.length, false) - 1];
+          if (first && last) {
+            const support = classifyEvidenceSupport(
+              topic.name,
+              e.snippet,
+              material.extractedText,
+              first.start,
+              last.end,
+            );
+            if (rank[support] > rank[bestSupport]) bestSupport = support;
+            let cueSentences = importanceSentences.get(e.materialId);
+            if (!cueSentences) {
+              cueSentences = extractImportanceSentences(material.extractedText);
+              importanceSentences.set(e.materialId, cueSentences);
+            }
+            bestCue ??= findImportanceCue(
+              material.extractedText,
+              first.start,
+              last.end,
+              topic.name,
+              cueSentences,
+            );
+            // Quotes repeat in course notes. Bound duplicate-location checks; cue lookup also scans
+            // the complete material for topic-specific exam-weighting statements.
+            occurrences += 1;
+            if (bestSupport !== 'weak' || occurrences >= 32) break;
+          }
+          searchFrom = at + 1;
+        }
+        return {
+          ...e,
+          support: bestSupport,
+          ...(bestCue ? { importanceCue: bestCue } : {}),
+        };
+      });
     if (evidence.length === 0) removed += 1;
-    else kept.push({ ...topic, evidence });
+    else {
+      const materialEmphasis = evidence.some((item) => !!item.importanceCue);
+      kept.push({
+        ...topic,
+        importance: topic.importance === 'HIGH' && !materialEmphasis ? 'MEDIUM' : topic.importance,
+        statedEmphasis: materialEmphasis,
+        evidence,
+      });
+    }
   }
   return { kept, removed };
+}
+
+/** First offset boundary whose value is > target (`strict`) or >= target. */
+function lowerBound(offsets: readonly number[], target: number, strict: boolean): number {
+  let low = 1;
+  let high = offsets.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    const boundary = offsets[middle] as number;
+    if (strict ? boundary <= target : boundary < target) low = middle + 1;
+    else high = middle;
+  }
+  return low;
 }

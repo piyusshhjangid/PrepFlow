@@ -1,0 +1,28 @@
+BIO 101: Introduction to Cell and Molecular Biology. Study guide for the midterm.
+
+The midterm covers the twenty-two items below. Items marked (core) will be examined directly; everything else may appear in short-answer questions.
+
+- Cell theory: all living things are made of cells, and cells come only from existing cells. (core)
+- Prokaryotic and eukaryotic cells: prokaryotes lack a nucleus and membrane-bound organelles, while eukaryotes have both.
+- Plasma membrane structure: a phospholipid bilayer with embedded proteins, described by the fluid mosaic model. (core)
+- Membrane transport: diffusion, osmosis, facilitated diffusion and active transport across membranes.
+- The nucleus: stores DNA, is surrounded by a double envelope with pores, and contains the nucleolus.
+- Ribosomes: the sites of protein synthesis, free in the cytosol or bound to the rough endoplasmic reticulum.
+- Endomembrane system: the endoplasmic reticulum, Golgi apparatus and vesicles modify and ship proteins.
+- Mitochondria: produce most of the cell's ATP through oxidative phosphorylation. (core)
+- Chloroplasts: carry out photosynthesis in plant cells using chlorophyll.
+- The cytoskeleton: microtubules, microfilaments and intermediate filaments give shape and enable movement.
+- Enzymes: biological catalysts that lower activation energy and are affected by temperature and pH. (core)
+- Cellular respiration: glycolysis, the citric acid cycle and the electron transport chain release energy from glucose. (core)
+- Photosynthesis: the light reactions and the Calvin cycle convert light energy into sugar.
+- DNA structure: a double helix of nucleotides held together by complementary base pairing.
+- DNA replication: a semiconservative process using helicase, primase and DNA polymerase.
+- Transcription: RNA polymerase copies a gene into messenger RNA in the nucleus.
+- Translation: ribosomes read messenger RNA codons and assemble amino acids into a protein. (core)
+- Gene regulation: operons in bacteria and transcription factors in eukaryotes control which genes are expressed.
+- The cell cycle: interphase, mitosis and cytokinesis, controlled by checkpoints.
+- Meiosis: two divisions that halve the chromosome number and create genetic variation.
+- Mendelian genetics: dominant and recessive alleles, Punnett squares and the laws of segregation and independent assortment.
+- Mutations: changes in the DNA sequence, including substitutions, insertions and deletions.
+
+Exam format: 40 multiple choice questions and 4 short answers. The core items together carry 70 percent of the marks.

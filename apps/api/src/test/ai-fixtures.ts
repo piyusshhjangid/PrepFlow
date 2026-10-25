@@ -18,6 +18,7 @@ export interface TopicOverrides {
   importance?: 'LOW' | 'MEDIUM' | 'HIGH';
   effort?: 'QUICK' | 'STANDARD' | 'EXTENSIVE';
   weakTopicMatch?: string | null;
+  statedEmphasis?: boolean;
   confidence?: number;
 }
 
